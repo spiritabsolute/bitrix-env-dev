@@ -1,0 +1,76 @@
+version: '2'
+services:
+  php:
+    build: ./${PHP_VERSION}
+    container_name: php
+    volumes_from:
+      - source
+    ports:
+      - '${INTERFACE}:9000:9000'
+    links:
+      - mysql
+    networks:
+      - bitrix
+    restart: always
+  nginx:
+    build: ./nginx
+    container_name: nginx
+    depends_on:
+      - source
+    volumes_from:
+      - source
+    environment:
+      SITE_PATH: ${SITE_PATH}
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/mysite.template
+    command: >
+      /bin/sh -c
+      "envsubst '
+      $$SITE_PATH
+      '< /etc/nginx/conf.d/mysite.template
+      > /etc/nginx/conf.d/default.conf
+      && nginx -g 'daemon off;'"
+    ports:
+      - '${INTERFACE}:80:80'
+      - '${INTERFACE}:443:443'
+    links:
+      - php
+    networks:
+      - bitrix
+    restart: always
+  mysql:
+    build: ./mysql
+    container_name: mysql
+    volumes_from:
+      - source
+    ports:
+      - '${INTERFACE}:3306:3306'
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    command: mysqld --sql-mode=""
+    networks:
+      - bitrix
+    restart: always
+  source:
+    image: alpine:latest
+    container_name: source
+    volumes:
+      - ${SITE_PATH}:${SITE_PATH}
+      - ${REPOSITORY_FOR_LINKS}:${REPOSITORY_FOR_LINKS}
+      - ./logs/nginx:/var/log/nginx
+      - ./logs/php:/var/log/php
+      - ./logs/mysql:/var/log/mysql
+      - ./data/mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime/:ro
+    networks:
+      - bitrix
+networks:
+  bitrix:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.100.0.0/24
