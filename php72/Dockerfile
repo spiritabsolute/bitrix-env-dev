@@ -1,4 +1,12 @@
-FROM php:7.2.14-fpm
+FROM php:7.2-fpm
+
+ARG INTERFACE="0.0.0.0"
+
+COPY ./custom.ini $PHP_INI_DIR/conf.d/custom.ini
+COPY ./opcache.ini $PHP_INI_DIR/conf.d/opcache.ini
+COPY ./xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
+
+ENV INTERFACE $INTERFACE
 
 RUN apt-get update && apt-get install -y \
 	libfreetype6-dev \
@@ -8,11 +16,8 @@ RUN apt-get update && apt-get install -y \
 && docker-php-ext-configure opcache --enable-opcache
 
 RUN docker-php-ext-install gd mysqli opcache \
-&& pecl install xdebug-2.6.0 && docker-php-ext-enable xdebug
-
-COPY ./custom.ini $PHP_INI_DIR/conf.d/custom.ini
-COPY ./opcache.ini $PHP_INI_DIR/conf.d/opcache.ini
-COPY ./xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
+&& pecl install xdebug-2.6.0 && docker-php-ext-enable xdebug \
+&& sed -i "1 a xdebug.remote_host="$INTERFACE $PHP_INI_DIR/conf.d/xdebug.ini
 
 RUN usermod -u 1000 www-data
 

@@ -1,7 +1,10 @@
 version: '2'
 services:
   php:
-    build: ./${PHP_VERSION}
+    build:
+      context: ./${PHP_VERSION}
+      args:
+        - INTERFACE=${INTERFACE}
     container_name: php
     volumes_from:
       - source
