@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
 && docker-php-ext-configure opcache --enable-opcache
 
 RUN docker-php-ext-install gd mysqli opcache \
-&& pecl install xdebug-2.6.0 && docker-php-ext-enable xdebug \
+&& pecl install xdebug && docker-php-ext-enable xdebug \
 && sed -i "1 a xdebug.remote_host="$INTERFACE $PHP_INI_DIR/conf.d/xdebug.ini
 
 RUN usermod -u 1000 www-data
