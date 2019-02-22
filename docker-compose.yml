@@ -63,6 +63,7 @@ services:
     volumes:
       - ${SITE_PATH}:${SITE_PATH}
       - ${REPOSITORY_FOR_LINKS}:${REPOSITORY_FOR_LINKS}
+      - ./logs/tmp:/tmp
       - ./logs/nginx:/var/log/nginx
       - ./logs/php:/var/log/php
       - ./logs/mysql:/var/log/mysql
