@@ -5,10 +5,13 @@ ARG INTERFACE="0.0.0.0"
 COPY ./custom.ini $PHP_INI_DIR/conf.d/custom.ini
 COPY ./opcache.ini $PHP_INI_DIR/conf.d/opcache.ini
 COPY ./xdebug.ini $PHP_INI_DIR/conf.d/xdebug.ini
+COPY ./sendmail.ini $PHP_INI_DIR/conf.d/sendmail.ini
+
+COPY ./ssmtp.conf /etc/ssmtp/ssmtp.conf
 
 ENV INTERFACE $INTERFACE
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y ssmtp \
 	libfreetype6-dev \
 	libjpeg62-turbo-dev \
 	libpng-dev \
