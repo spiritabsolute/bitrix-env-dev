@@ -1,4 +1,4 @@
-FROM php:7.2-fpm
+FROM php:7.3-fpm-stretch
 
 ARG INTERFACE="0.0.0.0"
 
@@ -12,12 +12,14 @@ COPY ./ssmtp.conf /etc/ssmtp/ssmtp.conf
 ENV INTERFACE $INTERFACE
 
 RUN apt-get update && apt-get install -y ssmtp \
+  zip libzip-dev \
 	libfreetype6-dev \
 	libjpeg62-turbo-dev \
 	libpng-dev \
 	libxml2-dev \
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-&& docker-php-ext-configure opcache --enable-opcache
+&& docker-php-ext-configure opcache --enable-opcache \
+&& docker-php-ext-configure zip --with-libzip
 
 RUN docker-php-ext-install xml zip gd mysqli opcache \
 && pecl install xdebug && docker-php-ext-enable xdebug \
