@@ -1,8 +1,8 @@
 # Bitrix на Docker
 
 Запуск Bitrix дистрибутива на Docker.
-Используются оффициальные образы php, nginx, mysql.
-Учтена возможность линковки папки проекта на локальной машине.
+Используются оффициальные образы php, nginx, mysql, composer.
+Учтена возможность линковки папки проекта на локальной машине и тестирования c phpunit.
 
 ## Зависимости
 - Git
@@ -30,19 +30,20 @@ cp -f .env_template .env
 ```
 ⚠️ Если у вас мак или windows, то удалите строчку /etc/localtime:/etc/localtime/:ro из docker-compose
 
-По умолчанию используется php72, эти настройки можно изменить в файле ```.env```. 
+По умолчанию используется php_latest, эти настройки можно изменить в файле ```.env```. 
 Также нужно задать путь к директории с сайтом, репозиторием для линковки и параметры базы данных MySQL.
 Если нужна линковка не нужна удалите из docker-composer линковку в ${REPOSITORY_FOR_LINKS}
 
 ```
-PHP_VERSION=php72                           # Версия php 
-MYSQL_DATABASE=bitrix                       # Имя базы данных
-MYSQL_USER=bitrix                           # Пользователь базы данных
-MYSQL_PASSWORD=bitrix                       # Пароль для доступа к базе данных
-MYSQL_ROOT_PASSWORD=bitrix                  # Пароль для пользователя root от базы данных
-INTERFACE=0.0.0.0                           # На данный интерфейс будут проксироваться порты
-SITE_PATH=/var/www/bitrix                   # Путь к директории Вашего сайта
-REPOSITORY_FOR_LINKS=/var/repository/base/  # Путь к директории с репозиторием
+PHP_VERSION=php_72                         # Версия php 
+MYSQL_DATABASE=bitrix                      # Имя базы данных
+MYSQL_USER=bitrix                          # Пользователь базы данных
+MYSQL_PASSWORD=bitrix                      # Пароль для доступа к базе данных
+MYSQL_ROOT_PASSWORD=bitrix                 # Пароль для пользователя root от базы данных
+SERVER_IDE=docker                          # Имя сервера, которое будет подставлено в константу PHP_IDE_CONFIG
+INTERFACE=0.0.0.0                          # На данный интерфейс будут проксироваться порты
+SITE_PATH=/var/www/bitrix                  # Путь к директории Вашего сайта
+REPOSITORY_FOR_LINKS=/var/repository/base/ # Путь к директории с репозиторием
 
 ```
 
@@ -57,3 +58,4 @@ docker-compose up --build
 ## Примечание
 - В настройках подключения требуется указывать имя сервиса, например для подключения к mysql нужно указывать "mysql", а не "localhost".
 - Для загрузки резервной копии в контейнер используйте команду: ```cat /var/www/bitrix/backup.sql | docker exec -i mysql /usr/bin/mysql -u root -p bitrix bitrix```
+- Для запуска тестов допишите путь site_path в phpunit.xml и настройте ide на работу с /phpunit.xml и /.bootstrap.php

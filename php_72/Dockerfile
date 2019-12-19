@@ -1,4 +1,12 @@
-FROM php:7.3-fpm-stretch
+FROM composer AS composer
+
+RUN composer require "phpunit/phpunit:^7" \
+  --no-interaction \
+  --no-plugins \
+  --no-scripts \
+  --prefer-dist
+
+FROM php:7.2-fpm-stretch
 
 ARG INTERFACE="0.0.0.0"
 
@@ -9,14 +17,19 @@ COPY ./sendmail.ini $PHP_INI_DIR/conf.d/sendmail.ini
 
 COPY ./ssmtp.conf /etc/ssmtp/ssmtp.conf
 
+COPY --from=composer /app/vendor /vendor
+
+COPY ./phpunit.xml /phpunit.xml
+COPY ./.bootstrap.php /.bootstrap.php
+
 ENV INTERFACE $INTERFACE
 
 RUN apt-get update && apt-get install -y ssmtp \
-  zip libzip-dev \
-	libfreetype6-dev \
-	libjpeg62-turbo-dev \
-	libpng-dev \
-	libxml2-dev \
+zip libzip-dev \
+libfreetype6-dev \
+libjpeg62-turbo-dev \
+libpng-dev \
+libxml2-dev \
 && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
 && docker-php-ext-configure opcache --enable-opcache \
 && docker-php-ext-configure zip --with-libzip

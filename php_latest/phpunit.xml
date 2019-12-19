@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+    <php>
+        <server name="DOCUMENT_ROOT" value = "/site_path"/>
+    </php>
+
+</phpunit>
