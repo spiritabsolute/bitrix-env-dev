@@ -1,6 +1,6 @@
 FROM composer AS composer
 
-RUN composer require "phpunit/phpunit:^7" \
+RUN composer require "phpunit/phpunit:^8" \
   --no-interaction \
   --no-plugins \
   --no-scripts \
