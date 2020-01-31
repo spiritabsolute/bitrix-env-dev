@@ -10,8 +10,6 @@ services:
       - source
     environment:
       PHP_IDE_CONFIG: 'serverName=${SERVER_IDE}'
-    ports:
-      - '${INTERFACE}:9000:9000'
     links:
       - mysql
     networks:
