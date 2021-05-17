@@ -5,7 +5,7 @@ services:
       context: ./${PHP_VERSION}
       args:
         - INTERFACE=${INTERFACE}
-    container_name: php
+    container_name: ${CONTAINER_PREFIX}php
     volumes_from:
       - source
     environment:
@@ -17,7 +17,7 @@ services:
     restart: always
   nginx:
     build: ./nginx
-    container_name: nginx
+    container_name: ${CONTAINER_PREFIX}nginx
     depends_on:
       - source
     volumes_from:
@@ -43,7 +43,7 @@ services:
     restart: always
   mysql:
     build: ./mysql
-    container_name: mysql
+    container_name: ${CONTAINER_PREFIX}mysql
     volumes_from:
       - source
     ports:
@@ -59,7 +59,7 @@ services:
     restart: always
   source:
     image: alpine:latest
-    container_name: source
+    container_name: ${CONTAINER_PREFIX}source
     volumes:
       - ${SITE_PATH}:${SITE_PATH}
       - ${REPOSITORY_FOR_LINKS}:${REPOSITORY_FOR_LINKS}

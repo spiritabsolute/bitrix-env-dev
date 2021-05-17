@@ -6,7 +6,7 @@ RUN composer require "phpunit/phpunit:^8" \
   --no-scripts \
   --prefer-dist
 
-FROM php:7.2-fpm-stretch
+FROM php:7.3-fpm-stretch
 
 ARG INTERFACE="0.0.0.0"
 
@@ -34,9 +34,10 @@ libxml2-dev \
 && docker-php-ext-configure opcache --enable-opcache \
 && docker-php-ext-configure zip --with-libzip
 
-RUN docker-php-ext-install xml zip gd mysqli opcache \
-&& pecl install xdebug && docker-php-ext-enable xdebug \
-&& sed -i "1 a xdebug.remote_host="$INTERFACE $PHP_INI_DIR/conf.d/xdebug.ini
+RUN docker-php-ext-install xml zip gd mysqli opcache
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+RUN sed -i "$ a xdebug.client_host="$INTERFACE $PHP_INI_DIR/conf.d/xdebug.ini \
+    && sed -i "$ a xdebug.client_port=9000" $PHP_INI_DIR/conf.d/xdebug.ini
 
 RUN usermod -u 1000 www-data
 
