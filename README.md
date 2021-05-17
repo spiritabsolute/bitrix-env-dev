@@ -30,13 +30,12 @@ cp -f .env_template .env
 ```
 ⚠️ Если у вас мак или windows, то удалите строчку /etc/localtime:/etc/localtime/:ro из docker-compose
 
-По умолчанию используется php_72, эти настройки можно изменить в файле ```.env```. 
-Скопируйте файл php_72/ssmtp_template.conf в php_72/ssmtp.conf и заполните свои данные.
+Скопируйте файл php/ssmtp_template.conf в php/ssmtp.conf и заполните свои данные.
 Также нужно задать путь к директории с сайтом, репозиторием для линковки и параметры базы данных MySQL.
-Если нужна линковка не нужна удалите из docker-composer линковку в ${REPOSITORY_FOR_LINKS}
+Если линковка не нужна удалите из docker-composer ${REPOSITORY_FOR_LINKS}
 
 ```
-PHP_VERSION=php_72                         # Версия php 
+PHP_VERSION=php                            # Версия php 
 MYSQL_DATABASE=bitrix                      # Имя базы данных
 MYSQL_USER=bitrix                          # Пользователь базы данных
 MYSQL_PASSWORD=bitrix                      # Пароль для доступа к базе данных
@@ -48,7 +47,7 @@ REPOSITORY_FOR_LINKS=/var/repository/base/ # Путь к директории с
 
 ```
 
-- Выполните в директории с файлом docker-compose.ymp команду
+- Выполните в директории с файлом docker-compose.ymp команду.
 ```
 docker-compose up --build
 ```
